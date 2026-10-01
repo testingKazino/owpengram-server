@@ -1140,6 +1140,9 @@ type Deps struct {
 	// AuthKeySessionLayers is the protocol-only durable ordering boundary for
 	// explicit invokeWithLayer evidence. Production must wire the same auth-key
 	// store used by the MTProto edge; nil is reserved for isolated router tests.
+	Stars interface {
+		Balance(ctx context.Context, userID int64) (int64, error)
+	}
 	AuthKeySessionLayers       store.AuthKeySessionLayerStore
 	ReadModelVersions          store.ReadModelVersionStore
 	UserProjectionFacts        UserProjectionFactInvalidator

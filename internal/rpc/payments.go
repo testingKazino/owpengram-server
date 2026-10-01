@@ -92,13 +92,20 @@ func (r *Router) onPaymentsGetStarsRevenueStats(ctx context.Context, req *tg.Pay
 // onPaymentsGetStarsStatus 无 Stars 账本，恒返回零余额（响应仍是合法的
 // payments.starsStatus——两端客户端无条件读取 balance 字段）。
 func (r *Router) onPaymentsGetStarsStatus(ctx context.Context, req *tg.PaymentsGetStarsStatusRequest) (*tg.PaymentsStarsStatus, error) {
-	if _, _, err := r.currentUserID(ctx); err != nil {
+	userID, _, err := r.currentUserID(ctx)
+	if err != nil {
 		return nil, internalErr()
 	}
 	if req != nil && req.GetTon() {
 		return emptyStarsStatus(&tg.StarsTonAmount{}), nil
 	}
-	return emptyStarsStatus(&tg.StarsAmount{}), nil
+
+	balance, err := r.deps.Stars.Balance(ctx, userID)
+	if err != nil {
+		return nil, internalErr()
+	}
+
+	return emptyStarsStatus(&tg.StarsAmount{Amount: balance}), nil
 }
 
 // onPaymentsGetStarsSubscriptions returns a zero balance and no subscriptions

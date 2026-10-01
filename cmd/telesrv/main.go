@@ -754,6 +754,7 @@ func run(logger *zap.Logger) error {
 	}
 	defer authKeySessionLayerStore.Close()
 	userStore := postgres.NewUserStore(pool)
+	starsStore := postgres.NewStarsStore(pool)
 	authzStore := postgres.NewAuthorizationStore(pool)
 	adminStore := postgres.NewAdminStore(pool)
 	updateStateStore := postgres.NewUpdateStateStore(pool)
@@ -1602,6 +1603,7 @@ func run(logger *zap.Logger) error {
 		Auth:                 authService,
 		AuthDeliveryReports:  authDeliveryReportService,
 		ClientTelemetry:      clientTelemetryService,
+		Stars:                starsStore,
 		AuthKeySessionLayers: authKeySessionLayerStore,
 		ReadModelVersions:    readModelVersionStore,
 		UserProjectionFacts:  userProjectionFacts,
